@@ -124,14 +124,20 @@ function increaseStock () {
                         console.log(error);
                         return;
                     }
-                    currentStock = results[0].stock_quantity;
-                    console.log(currentStock);
-                })
+                    currentStock = parseInt(results[0].stock_quantity);
 
-                //     connection.query('UPDATE `products` SET stock_quantity = ? + stockIncrease WHERE product_name = ?', [])
-                // })
+                    connection.query('UPDATE `products` SET stock_quantity = ? + ' + stockIncrease + ' WHERE product_name = ?', [currentStock, product], function (error, data) {
+                        if (error) {
+                            console.log(error);
+                            return;
+                        }
+                        console.log('You\'ve increased the stock quantity of ' + product + ' by ' + stockIncrease + '.');
+                    })
+
+                })
+            })
     
         })
     })
-})
 }
+
