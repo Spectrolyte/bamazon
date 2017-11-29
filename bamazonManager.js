@@ -30,8 +30,8 @@ function showManagerOps () {
             increaseStock();
         }
         else if (data.managerOp === 'Add New Product') {
-            console.log(data.managerOp);
-            
+            // add a completely new product to the store
+            addNewItem();
         }
     })
 }
@@ -132,11 +132,43 @@ function increaseStock () {
                             return;
                         }
                         console.log('You\'ve increased the stock quantity of ' + product + ' by ' + stockIncrease + '.');
+                        showManagerOps();
                     })
 
                 })
             })
     
+        })
+    })
+}
+
+function addNewItem () {
+    inquirer.prompt([
+        {
+            type: 'input',
+            message: 'What\'s the name of your new product?',
+            name: 'product_name'
+        },
+        {
+            type: 'input',
+            message: 'What department is your item a part of?',
+            name: 'department_name'
+        },
+        {
+            type: 'input',
+            message: 'What\'s the price of your item?',
+            name: 'price'
+        },
+        {
+            type: 'input',
+            message: 'How much of this item would you like to stock?',
+            name: 'stock_quantity'
+        }
+    ]).then(function (data) {
+        // update db
+        connection.query('INSERT INTO `products` SET ?', data, function (error, result) {
+            console.log('Your item has been added to the Bamazon inventory.');
+            showManagerOps();
         })
     })
 }
