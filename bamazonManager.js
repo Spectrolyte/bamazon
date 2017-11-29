@@ -18,13 +18,12 @@ function showManagerOps () {
         }
     ]).then(function (data) {
         if (data.managerOp === 'View Products for Sale') {
-            console.log(data.managerOp);
             // list every available item: the item IDs, names, prices, and quantities
             showInventory();
         }
         else if (data.managerOp === 'View Low Inventory') {
-            console.log(data.managerOp);
-            
+            // list all items with an inventory count lower than five.
+            lowInventory();
         }
         else if (data.managerOp === 'Add to Inventory') {
             console.log(data.managerOp);
@@ -47,13 +46,36 @@ function showInventory () {
             return;
         }
     
-        console.log('List of inventory items: \n');
+        console.log('\nList of inventory items: \n');
         for (var i=0; i < results.length; i++) {
             console.log('Product ID: ' + results[i].item_id);
             console.log('Product Name: ' + results[i].product_name);
             console.log('Price: $' + results[i].price);
             console.log('Stock Quantity: ' + results[i].stock_quantity);
             console.log('--------------------------------------');
+        }
+
+        showManagerOps();
+      });
+}
+
+function lowInventory () {
+    connection.query('SELECT * FROM `products`', function (error, results) {
+        // if there's an error, print and return
+        if (error) {
+            console.log(error);
+            return;
+        }
+    
+        console.log('\nList of inventory items low in stock: \n');
+        for (var i=0; i < results.length; i++) {
+            if (results[i].stock_quantity < 5) {
+                console.log('Product ID: ' + results[i].item_id);
+                console.log('Product Name: ' + results[i].product_name);
+                console.log('Price: $' + results[i].price);
+                console.log('Stock Quantity: ' + results[i].stock_quantity);
+                console.log('--------------------------------------');
+            }
         }
 
         showManagerOps();

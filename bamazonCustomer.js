@@ -23,7 +23,7 @@ connection.query('SELECT * FROM `products`', function (error, results) {
 
     bamazonProducts = results;
 
-    console.log('Welcome to Bamazon! These are the items we currently have in stock: \n');
+    console.log('\nWelcome to Bamazon! These are the items we currently have in stock: \n');
     for (var i=0; i < results.length; i++) {
         console.log('Product ID: ' + results[i].item_id);
         console.log('Product Name: ' + results[i].product_name);
