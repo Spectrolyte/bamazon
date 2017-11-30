@@ -8,8 +8,8 @@ CREATE TABLE products (
 	department_name VARCHAR(50),
 	price INTEGER,
 	stock_quantity INTEGER,
+	product_sales INTEGER DEFAULT 0,
 	PRIMARY KEY (item_id)
-
 );
 
 DESCRIBE products;
@@ -29,4 +29,14 @@ VALUES
 	('Smario Odyssey', 'Games', 60, 85);
 	
 SELECT * FROM products;
+
+CREATE TABLE departments (
+	department_id INT AUTO_INCREMENT,
+	department_name VARCHAR(50),
+	over_head_costs INT,
+	PRIMARY KEY (department_id)
+);
+
+
+
 	

@@ -31,7 +31,7 @@ connection.query('SELECT * FROM `products`', function (error, results) {
         console.log('--------------------------------------');
     }
     placeOrder();
-  });
+});
 
 // User prompts:
 // The first should ask them the ID of the product they would like to buy.
@@ -75,6 +75,7 @@ function checkStock (id, order) {
     var productName;
     var unitsLeft;
     var price;
+    var total;
 
     // If not, the app should log a phrase like Insufficient quantity!, and then prevent the order from going through.
     // However, if your store does have enough of the product, you should fulfill the customer's order.
@@ -89,13 +90,16 @@ function checkStock (id, order) {
             productName = bamazonProducts[i].product_name;
             unitsLeft = bamazonProducts[i].stock_quantity;
             price = bamazonProducts[i].price;
+            total = parseInt(order) * price;
+
 
             if (unitsLeft > parseInt(order)) {
                 console.log('update bamazon database');
-                // subtract the units ordered from the stock quantity
-                updateStock(productId, unitsOrdered, unitsLeft);
+                // subtract the units ordered from the stock quantity and update product sales with total
+                updateStock(productId, unitsOrdered, unitsLeft, total);
+
                 // display order and total
-                console.log('You ordered ' + order + ' of ' + productName + '. Your total is $' + (parseInt(order) * price) + '.');
+                console.log('You ordered ' + order + ' of ' + productName + '. Your total is $' + total + '.');
             }
             else {
                 console.log('Insufficient quantity!');
@@ -104,17 +108,23 @@ function checkStock (id, order) {
     }
 }
 
-function updateStock (id, order, remaining) {
+function updateStock (id, order, remaining, sale) {
     var unitsLeft = parseInt(remaining);
     var unitsOrdered = parseInt(order);
+    var newSale = sale;
     // subtract the units ordered from the stock quantity
     var newStock = unitsLeft - unitsOrdered;
 
-    connection.query('UPDATE `products` SET `stock_quantity` = ? WHERE `item_id` = ?', [newStock, id], function (error, results, fields) {
-        if (error) {
-            console.log(error);
-            return;
-        }
-        console.log('Order successfully placed!');
-    });
+    connection.query('SELECT * FROM `products` WHERE `item_id` = ?', [id], function (error, results) {
+
+        var currentSales = results[0].product_sales;
+
+        connection.query('UPDATE `products` SET `stock_quantity` = ?, `product_sales` = ? + ' + newSale + ' WHERE `item_id` = ?', [newStock, currentSales, id], function (error, results) {
+            if (error) {
+                console.log(error);
+                return;
+            }
+            console.log('Order successfully placed!');
+        });
+    })
 }
