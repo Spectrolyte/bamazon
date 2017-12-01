@@ -37,6 +37,19 @@ CREATE TABLE departments (
 	PRIMARY KEY (department_id)
 );
 
-
-
+INSERT INTO departments
+	(department_name, over_head_costs)
+VALUES
+	('Food', 800),
+	('Beauty', 500),
+	('Fitness', 750),
+	('Electronics', 2000),
+	('Household', 500),
+	('Games', 1000);
 	
+SELECT * FROM departments;
+
+SELECT departments.department_id, departments.department_name, departments.over_head_costs, SUM(product_sales) AS product_sales, SUM(product_sales) - departments.over_head_costs AS total_profit FROM departments INNER JOIN products ON departments.department_name = products.department_name GROUP BY departments.department_name ORDER BY departments.department_id;
+
+SET SESSION sql_mode = 'STRICT_TRANS_TABLES,NO_ZERO_IN_DATE'
+
