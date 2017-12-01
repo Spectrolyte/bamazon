@@ -1,5 +1,5 @@
 var inquirer = require('inquirer');
-
+require('console.table');
 var mysql      = require('mysql');
 var connection = mysql.createConnection({
   host     : 'localhost',
@@ -30,8 +30,25 @@ connection.query('SELECT * FROM `products`', function (error, results) {
         console.log('Price: $' + results[i].price);
         console.log('--------------------------------------');
     }
-    placeOrder();
+    confirmUser();
 });
+
+function confirmUser () {
+    inquirer.prompt([
+        {
+            type: 'confirm',
+            message: 'Would you like to purchase an item from Bamazon?',
+            name: 'confirm'
+        }
+    ]).then(function (data) {
+        if (data.confirm) {
+            placeOrder();
+        }
+        else {
+            console.log('Okay. We\'ll see you next time!');
+        }
+    })
+}
 
 // User prompts:
 // The first should ask them the ID of the product they would like to buy.
@@ -103,6 +120,7 @@ function checkStock (id, order) {
             }
             else {
                 console.log('Insufficient quantity!');
+                confirmUser();
             }
         }
     }
@@ -125,6 +143,7 @@ function updateStock (id, order, remaining, sale) {
                 return;
             }
             console.log('Order successfully placed!');
+            confirmUser();
         });
     })
 }

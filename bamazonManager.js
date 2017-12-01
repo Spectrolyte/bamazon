@@ -1,5 +1,5 @@
 var inquirer = require('inquirer');
-
+require('console.table');
 var mysql      = require('mysql');
 var connection = mysql.createConnection({
   host     : 'localhost',
@@ -13,7 +13,7 @@ function showManagerOps () {
         {
             type: 'list',
             message: 'What would you like to do?',
-            choices: ['View Products for Sale', 'View Low Inventory', 'Add to Inventory','Add New Product'],
+            choices: ['View Products for Sale', 'View Low Inventory', 'Add to Inventory','Add New Product', 'Nothing'],
             name: 'managerOp'
         }
     ]).then(function (data) {
@@ -33,10 +33,11 @@ function showManagerOps () {
             // add a completely new product to the store
             addNewItem();
         }
+        else {
+            console.log('Okay. See you next time!');
+        }
     })
 }
-
-showManagerOps();
 
 function showInventory () {
     connection.query('SELECT * FROM `products`', function (error, results) {
@@ -47,13 +48,7 @@ function showInventory () {
         }
     
         console.log('\nList of inventory items: \n');
-        for (var i=0; i < results.length; i++) {
-            console.log('Product ID: ' + results[i].item_id);
-            console.log('Product Name: ' + results[i].product_name);
-            console.log('Price: $' + results[i].price);
-            console.log('Stock Quantity: ' + results[i].stock_quantity);
-            console.log('--------------------------------------');
-        }
+        console.table(results);
 
         showManagerOps();
       });
@@ -173,3 +168,4 @@ function addNewItem () {
     })
 }
 
+showManagerOps();
